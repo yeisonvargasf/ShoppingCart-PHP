@@ -16,9 +16,7 @@ class View
     function __construct()
     {
         $this->baseTemplate = array(
-            'SECTION' => '',
-            'MENU' => '',
-            'MIGAS_PAN' => ''
+            'CONTENT' => '',
         );
     }
 
@@ -33,7 +31,7 @@ class View
     {
         if (count($this->data) > 0) {
             foreach ($this->data as $key => $value) {
-                $this->template = str_replace('[' . $key . ']', $value, $this->template);
+                $this->template = str_replace('[' . strtoupper($key) . ']', $value, $this->template);
             }
         }
     }
@@ -44,12 +42,7 @@ class View
         $this->data = $data;
         $this->renderData();
 
-        $this->baseTemplate['SECTION'] = $this->template;
-
-        if (isset($_SESSION['correo'])) {
-            $this->baseTemplate['MENU'] = $data['MENU'];
-            $this->baseTemplate['MIGAS_PAN'] = $data['MIGAS_PAN'];
-        }
+        $this->baseTemplate['CONTENT'] = $this->template;
 
         $this->getTemplate('template_base');
 

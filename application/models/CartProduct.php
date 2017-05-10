@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/Product.php';
+
 /**
  * Created by PhpStorm.
  * User: yeison
@@ -98,29 +100,24 @@ class CartProduct extends Database
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
+        $this->update('quantity', $quantity);
     }
-
-
 
     public function get($key = '', $value = '')
     {
 
-        if (!isset($key) && isset($value)) {
+        if (isset($key) && isset($value)) {
             $this->query = "
 						SELECT *
 						FROM cart_product
 						WHERE cart_product.$key = '$value'";
             $this->get_results_query();
 
-            //$this->errores();
         }
 
-        //print_r($this->filas);
-
         if (count($this->rows) == 1) {
-            $currentReference = 'this';
             foreach ($this->rows[0] as $attribute => $value) {
-                $$currentReference->$attribute = $value;
+                $this->$attribute = $value;
             }
         } else {
             $this->init();
@@ -128,12 +125,57 @@ class CartProduct extends Database
 
     }
 
+    public function update($key = '', $value = '') {
+        $this->query = "
+					UPDATE cart_product SET " . $key . " = '$value'
+					WHERE id = '$this->id'
+					";
+
+        $this->execute_simple_query();
+        $this->$key = $value;
+    }
+
     public function list()
     {
         $this->query = "SELECT * FROM cart_product WHERE quantity>0 LIMIT " . LIMIT_LIST_PRODUCTS;
         $this->get_results_query();
 
+        foreach ($this->rows as $key => $value) {
+            $myProduct = new Product();
+            $myProduct->get('id', $this->rows[$key]['product']);
+            $this->rows[$key]['name'] = $myProduct->getName();
+            $this->rows[$key]['price'] = $myProduct->getPrice();
+        }
+
         return $this->rows;
+    }
+
+
+    public function get_resume_by_cart($carId) {
+        $this->query = "
+						SELECT *
+						FROM cart_product
+						WHERE cart_product.cart = '$carId'";
+
+        $this->get_results_query();
+
+        $number = 0;
+        $total = 0;
+
+        if(count($this->rows) < 1) {
+            return array('NUMBER_ITEMS'=> $number, 'TOTAL'=> $total);
+        }
+
+        foreach ($this->rows as $key => $value) {
+            $myProduct = new Product();
+            $myProduct->get('id', $this->rows[$key]['product']);
+
+            $number += $this->rows[$key]['quantity'];
+            $total += $this->rows[$key]['quantity'] * $myProduct->getPrice();
+        }
+
+
+        return array('NUMBER_ITEMS'=> $number, 'TOTAL'=> $total);
     }
 
 }

@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../libs/View.php';
+
 /**
  * Created by PhpStorm.
  * User: yeison
@@ -8,19 +10,23 @@
  */
 class HomeProductsView extends View
 {
-    function __construct($type, $data=array(), $message)
+    function __construct($type, $products=array(), $resume=array(), $message)
     {
         parent::__construct();
-        if($type == 'error' || $type == 'exito') {
-            $this->getTemplate($type);
-            $this->data = array('MENSAJE'=>$message);
+
+        $dataListProducts = array('PRODUCTS' => '', 'NUMBER_ITEMS'=> '', 'TOTAL'=> '');
+
+        foreach ($products as $product) {
+            $this->getTemplate('add_product');
+            $this->data = $product;
             $this->renderData();
+            $dataListProducts['PRODUCTS'] = $dataListProducts['PRODUCTS'].$this->template;
         }
 
-        $datos['DIV'] = $this->template;
-        $this->template = "";
+        $dataListProducts['NUMBER_ITEMS'] = $resume['NUMBER_ITEMS'];
+        $dataListProducts['TOTAL'] = $resume['TOTAL'];
 
-        $this->showView('iniciar_sesion', $datos);
+        $this->showView('list_products', $dataListProducts);
     }
 
 }

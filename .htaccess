@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteRule ^products/$ index.php
+RewriteRule ^cart/1/products/(\d+)*/add$ index.php?id=$1&route=ADD_PRODUCT
+RewriteRule ^cart/1/products/(\d+)*/delete index.php?id=$1&route=DELETE_PRODUCT
+RewriteRule ^cart/1/$ index.php?route=SHOW_CART

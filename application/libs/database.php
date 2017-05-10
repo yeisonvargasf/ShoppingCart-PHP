@@ -7,7 +7,7 @@
  * Time: 16:23
  *  Requerimos el archivo config.php, que contiene las constantes generales en la aplicación web y otras configuraciones.
  */
-require_once '../config/development.php';
+require_once __DIR__ . '/../config/development.php';
 
 /**
  * Clase de abstracción, contiene funciones que acceden a la base de datos.

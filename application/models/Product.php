@@ -6,7 +6,8 @@
  * Date: 09/05/17
  * Time: 16:26
  */
-require_once '../libs/database.php';
+require_once __DIR__ . '/../libs/database.php';
+require_once __DIR__ . '/../config/config.php';
 
 class Product extends Database
 {
@@ -15,6 +16,9 @@ class Product extends Database
     private $name;
     private $price;
     private $stock;
+
+    function __construct(){
+    }
 
     public function init()
     {
@@ -39,7 +43,6 @@ class Product extends Database
     {
         $this->id = $id;
     }
-
 
 
     /**
@@ -88,8 +91,8 @@ class Product extends Database
     public function setStock($stock)
     {
         $this->stock = $stock;
+        $this->update('stock', $stock);
     }
-
 
 
     public function list()
@@ -100,25 +103,30 @@ class Product extends Database
         return $this->rows;
     }
 
+    public function update($key = '', $value = '')
+    {
+        $this->query = "
+					UPDATE product SET " . $key . " = '$value'
+					WHERE id = '$this->id'
+					";
+        $this->execute_simple_query();
+        $this->$key = $value;
+    }
+
     public function get($key = '', $value = '')
     {
 
-        if (!isset($key) && isset($value)) {
+        if (isset($key) && isset($value)) {
             $this->query = "
 						SELECT *
 						FROM product
 						WHERE product.$key = '$value'";
             $this->get_results_query();
-
-            //$this->errores();
         }
 
-        //print_r($this->filas);
-
         if (count($this->rows) == 1) {
-            $currentReference = 'this';
-            foreach ($this->rows[0] as $attribute => $valor) {
-                $$currentReference->$attribute = $value;
+            foreach ($this->rows[0] as $attribute => $value) {
+                $this->$attribute = $value;
             }
         } else {
             $this->init();

@@ -1,5 +1,10 @@
 <?php
 
+require_once __DIR__ . '/../models/Product.php';
+require_once __DIR__ . '/../views/HomeProducts.php';
+require_once __DIR__ . '/../models/CartProduct.php';
+require_once __DIR__ . '/../views/HomeShoppingCart.php';
+
 /**
  * Created by PhpStorm.
  * User: yeison
@@ -17,12 +22,13 @@ class ShoppingCart
     // Product
     public function showProducts() {
         $this->model = new Product();
-        new HomeProductsView('home_products', $this->model->list());
+        new HomeProductsView('list_products', $this->model->list(), (new CartProduct())->get_resume_by_cart(1), '');
     }
 
     public function showCart() {
         $this->model = new CartProduct();
-        new HomeShoppingCartView('home_shopping_cart', $this->model->list());
+        new HomeShoppingCartView('list_shoppingcart', $this->model->list(),
+            (new CartProduct())->get_resume_by_cart(1), '');
     }
 
     public function addProductCart($productId) {
@@ -32,6 +38,7 @@ class ShoppingCart
 
         if($this->model->getStock() < 1) {
             # Print ERROR
+            print("ERROR");
             exit;
         }
 
@@ -46,14 +53,18 @@ class ShoppingCart
             $this->model->save($productId, 1, 1);
         }
 
+        header("Location: /shoppingcart/products/");
+        die();
+
     }
 
-    public function removeProductCart($productId) {
+    public function deleteProductCart($productId) {
         $this->model = new Product();
         $this->model->get('id', $productId);
 
         if($this->model->getId() < 0) {
             # Print ERROR
+            print("ERROR");
             exit;
         }
 
@@ -66,8 +77,12 @@ class ShoppingCart
 
         } else {
             # Print ERROR
+            print("ERROR");
             exit;
         }
+
+        header("Location: /shoppingcart/cart/1/");
+        die();
 
     }
 
