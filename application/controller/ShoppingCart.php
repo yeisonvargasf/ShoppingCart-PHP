@@ -14,7 +14,6 @@ require_once __DIR__ . '/../views/HomeShoppingCart.php';
 class ShoppingCart
 {
     private $model;
-    private $view;
 
     public function __construct() {
     }

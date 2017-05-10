@@ -11,8 +11,8 @@ const DB_HOST = 'database.megaterios.co';
 const DB_USER = 'shopping_php';
 const DB_PASSWORD = 'shopping_php';
 const DB_NAME = 'shopping_php';
-const DB_ERROR_CONNECTION = 'Falló la conexión: ';
-const DB_ERROR_SIMPLE_query = 'Falló al realizar una petición simple en la base de datos: ';
+const DB_ERROR_CONNECTION = 'There is a problem with the connection: ';
+const DB_ERROR_SIMPLE_QUERY = 'There is a problem with the Database: ';
 
 ?>
 
